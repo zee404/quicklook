@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# This installs fastapi with the "standard" extras (uvicorn, etc.)
+fastapi = {extras = ["standard"], version = "*"}
+uvicorn = "*"
+langchain = "*"
+chromadb = "*"
+langchain-google-genai = "*"
+langchain-community = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

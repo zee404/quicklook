@@ -1,0 +1,9 @@
+
+
+.vscode/
+
+.env
+.env.local
+.env.*.local
+
+.venv/
