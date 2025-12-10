@@ -3,13 +3,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from app.core.config import settings
+from app.services.agents.agent_service import AgentService
 
-class GeminiService:
+class GeminiService(AgentService):
     def __init__(self):
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-pro",
+            model="models/gemini-flash-lite-latest",
             temperature=0.3,
-            google_api_key=settings.GOOGLE_API_KEY
+            google_api_key=settings.LLM_API_KEY
         )
         
         self.prompt = PromptTemplate(
@@ -36,5 +37,6 @@ class GeminiService:
 
     def generate_response(self, context_text: str, question: str) -> str:
         # 3. Invoke the chain directly
+        print("Generating response from Gemini... context:", context_text)
         response = self.chain.invoke({"context": context_text, "question": question})
         return response
