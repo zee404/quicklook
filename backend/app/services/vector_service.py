@@ -1,5 +1,5 @@
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 from app.core.config import settings
 

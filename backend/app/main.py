@@ -10,4 +10,5 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 def health_check():
+    test="zze"
     return {"status": "ok", "app": "QuickLook Backend"}
