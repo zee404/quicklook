@@ -1,6 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+# 1. FIX: Import from 'langchain_core' instead of 'langchain'
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from app.core.config import settings
 
 class GeminiService:
@@ -11,13 +12,12 @@ class GeminiService:
             google_api_key=settings.GOOGLE_API_KEY
         )
         
-        # Define the personality and instructions
         self.prompt = PromptTemplate(
             input_variables=["context", "question"],
             template="""
-            You are a helpful assistant for the QuickLook internal tool.
-            Use the following context to answer the user's question.
-            If the answer is not in the context, say "I don't have that information in my knowledge base."
+            You are a helpful technical assistant.
+            Answer the question based ONLY on the following context.
+            If the answer is not in the context, say "I don't have that information."
             
             Context:
             {context}
@@ -28,11 +28,13 @@ class GeminiService:
             Answer:
             """
         )
+        
+        # 2. FIX: Use LCEL (The modern way to chain)
+        # Instead of LLMChain, we use the pipe operator (|)
+        # Prompt -> LLM -> String Output
+        self.chain = self.prompt | self.llm | StrOutputParser()
 
     def generate_response(self, context_text: str, question: str) -> str:
-        """
-        Sends the prompt to Gemini and gets the text string back.
-        """
-        chain = LLMChain(llm=self.llm, prompt=self.prompt)
-        response = chain.invoke({"context": context_text, "question": question})
-        return response['text']
+        # 3. Invoke the chain directly
+        response = self.chain.invoke({"context": context_text, "question": question})
+        return response

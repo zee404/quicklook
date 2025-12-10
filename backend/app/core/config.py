@@ -1,11 +1,10 @@
-import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # 1. Define the fields matching your .env file
     APP_NAME: str = "QuickLook"
     GOOGLE_API_KEY: str
-    CHROMA_HOST: str = "vector_db"
+    VECTOR_DB: str = "vector_db"
 
     class Config:
         env_file = ".env"
