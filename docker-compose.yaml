@@ -2,11 +2,15 @@ services:
   backend:
     build: ./backend
     container_name: quiklook_backend
-    command: fastapi dev app/main.py --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
+      - "5678:5678"
     volumes:
       - ./backend/app:/app/app
+    environment:
+      - APP_ENV=development
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
     networks:
       - quicklook_net
 
