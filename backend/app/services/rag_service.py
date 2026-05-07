@@ -13,7 +13,7 @@ class RagService:
         # Step 1: Search the Memory (Vector DB)
         # We ask for the top 5 relevant chunks
         logger.info(f"Processing user question: {user_question}")
-        relevant_docs = self.vector_service.search_similar(user_question, k=5)
+        relevant_docs = self.vector_service.search_similar(user_question, k=3)
         
         if not relevant_docs:
             return "I couldn't find any relevant documents to answer your question."
