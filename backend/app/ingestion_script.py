@@ -6,6 +6,7 @@ import google.generativeai as genai
 from app.core.config import settings
 from app.services.vector.factory import get_vector_store
 import argparse
+from app.core.logger import logger
 
 class PrepareData:
     def __init__(self):
@@ -16,10 +17,13 @@ class PrepareData:
         )
 
     def ingest_pdf(self,pdf_path:str):
-        print(f"🔄 Ingesting: {pdf_path}")
+        logger.info(f"🔄 Ingesting: {pdf_path}")
 
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(pdf_path)
+
+        # Delete existing documents for this source if any
+        self.vector_store.delete_by_source(pdf_path)
 
         loader = PyPDFLoader(pdf_path)
         pages = loader.load()
@@ -33,16 +37,16 @@ class PrepareData:
                 chunks[i : i + batch_size]
             )
 
-        print("✅ Ingestion complete")
+        logger.info("✅ Ingestion complete")
 
     def inspect_data(self):
-        print("🔍 Inspecting Vector Database Collections...")
+        logger.info("🔍 Inspecting Vector Database Collections...")
         client = HttpClient(host="vector_db", port=8000)
         genai.configure(api_key=settings.LLM_API_KEY)
 
         models = genai.list_models()
-        print([m.name for m in models])
-        print(client.list_collections())
+        logger.info(f"Models: {[m.name for m in models]}")
+        logger.info(f"Collections: {client.list_collections()}")
         # client.delete_collection(settings.VECTOR_COLLECTION)
 
 def main():
@@ -55,8 +59,8 @@ def main():
 
     args = parser.parse_args()
 
-    # PrepareData().ingest_pdf(args.pdf)
-    PrepareData().inspect_data()
+    PrepareData().ingest_pdf(args.pdf)
+    # PrepareData().inspect_data()
 
 
 if __name__ == "__main__":

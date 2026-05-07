@@ -4,6 +4,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from app.core.config import settings
 from app.services.agents.agent_service import AgentService
+from app.core.logger import logger
 
 class GeminiService(AgentService):
     def __init__(self):
@@ -30,13 +31,11 @@ class GeminiService(AgentService):
             """
         )
         
-        # 2. FIX: Use LCEL (The modern way to chain)
-        # Instead of LLMChain, we use the pipe operator (|)
-        # Prompt -> LLM -> String Output
         self.chain = self.prompt | self.llm | StrOutputParser()
 
     def generate_response(self, context_text: str, question: str) -> str:
         # 3. Invoke the chain directly
-        print("Generating response from Gemini... context:", context_text)
+        logger.info(f"Generating response from Gemini... context length: {len(context_text)}")
+        logger.debug(f"Context: {context_text}")
         response = self.chain.invoke({"context": context_text, "question": question})
         return response

@@ -3,6 +3,7 @@ from app.core.config import settings
 from app.services.embeddings.factory import get_embedding_service
 from chromadb import HttpClient
 from langchain_community.vectorstores import Chroma
+from app.core.logger import logger
 
 class ChromaVectorService(VectorStoreService):
     
@@ -21,10 +22,17 @@ class ChromaVectorService(VectorStoreService):
         self.vector_db.add_documents(docs)
 
     def search_similar(self, query: str, k: int = 3):
-        print(f"Searching for top {k} similar documents to the query: '{query}'")
+        logger.info(f"Searching for top {k} similar documents to the query: '{query}'")
         try:
             docs = self.vector_db.similarity_search(query, k=k)
             return docs
         except Exception as e:
-            print(f"Error searching vector DB: {e}")
+            logger.error(f"Error searching vector DB: {e}", exc_info=True)
             return []
+
+    def delete_by_source(self, source: str) -> None:
+        logger.info(f"Deleting existing documents with source: {source}")
+        try:
+            self.vector_db._collection.delete(where={"source": source})
+        except Exception as e:
+            logger.error(f"Error deleting documents by source: {e}", exc_info=True)

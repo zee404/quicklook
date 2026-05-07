@@ -1,6 +1,7 @@
 from app.services.vector_service import VectorService
 from app.services.agents.factory import get_agent
 from app.core.config import settings
+from app.core.logger import logger
 
 class RagService:
     def __init__(self):
@@ -10,9 +11,9 @@ class RagService:
 
     def process_query(self, user_question: str) -> str:
         # Step 1: Search the Memory (Vector DB)
-        # We ask for the top 3 relevant chunks
-        print(f"Processing user question: {user_question}")
-        relevant_docs = self.vector_service.search_similar(user_question, k=10)
+        # We ask for the top 5 relevant chunks
+        logger.info(f"Processing user question: {user_question}")
+        relevant_docs = self.vector_service.search_similar(user_question, k=5)
         
         if not relevant_docs:
             return "I couldn't find any relevant documents to answer your question."

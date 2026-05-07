@@ -6,19 +6,17 @@ async function sendMessage() {
     const query = userInput.value.trim();
     if (!query) return;
 
-    // 1. Add User's Question to UI
     addMessage(query, 'user-message');
     userInput.value = '';
     setLoading(true);
 
     try {
-        // 2. Call the API (Relative path works because of Nginx proxy)
         const response = await fetch('/api/v1/chat/query', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ user_question: query }) // Matches your Pydantic schema
+            body: JSON.stringify({ user_question: query }) // Matches the Pydantic schema
         });
 
         if (!response.ok) {
@@ -49,9 +47,8 @@ function addMessage(text, type) {
         <div class="avatar"><i class="fa-solid ${icon}"></i></div>
         <div class="bubble">${formatText(text)}</div>
     `;
-    
+
     chatHistory.appendChild(msgDiv);
-    // Auto-scroll to bottom
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
@@ -63,7 +60,7 @@ function formatText(text) {
 function setLoading(isLoading) {
     userInput.disabled = isLoading;
     sendBtn.disabled = isLoading;
-    if(isLoading) {
+    if (isLoading) {
         sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
     } else {
         sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
@@ -73,5 +70,5 @@ function setLoading(isLoading) {
 
 // Allow pressing "Enter" to send
 userInput.addEventListener('keypress', (e) => {
-if (e.key === 'Enter') sendMessage();
+    if (e.key === 'Enter') sendMessage();
 });

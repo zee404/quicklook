@@ -3,7 +3,7 @@ services:
     build: ./backend
     container_name: quiklook_backend
     ports:
-      - "8000:8000"
+      # - "8000:8000"
       - "5678:5678"
     volumes:
       - ./backend/app:/app/app
@@ -28,7 +28,7 @@ services:
     ports:
       - "8001:8000" 
     volumes:
-      - ./data:/chroma/chroma  # Persist data
+      - ./data:/chroma/chroma  
     networks:
       - quicklook_net
 

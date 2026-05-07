@@ -10,3 +10,7 @@ class VectorStoreService(ABC):
     @abstractmethod
     def search_similar(self, query: str, k: int = 3):
         pass
+
+    @abstractmethod
+    def delete_by_source(self, source: str) -> None:
+        pass
